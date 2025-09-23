@@ -1,8 +1,9 @@
-export function initBears() {
-  var baseUrl = "https://en.wikipedia.org/w/api.php";
-  var title = "List_of_ursids";
+export const initBears = () => {
+  const baseUrl = "https://en.wikipedia.org/w/api.php";
+  const title = "List_of_ursids";
+  const IMAGE_TIMEOUT = 5000; // Fix magic number
 
-  var params = {
+  const params = {
     action: "parse",
     page: title,
     prop: "wikitext",
@@ -11,28 +12,27 @@ export function initBears() {
     origin: "*"
   };
 
-  // Function to check if image URL is accessible
-  function checkImageUrl(url) {
-    return new Promise(function(resolve) {
+  const checkImageUrl = (url) => {
+    return new Promise((resolve) => {
       try {
-        var img = new Image();
-        img.onload = function() { resolve(true); };
-        img.onerror = function() { resolve(false); };
-        setTimeout(function() { resolve(false); }, 5000);
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        setTimeout(() => resolve(false), IMAGE_TIMEOUT); // Use constant instead of magic number
         img.src = url;
       } catch (error) {
         resolve(false);
       }
     });
-  }
+  };
 
-  function fetchImageUrl(fileName) {
+  const fetchImageUrl = async (fileName) => {
     if (!fileName || fileName.trim() === '') {
-      return Promise.resolve('https://placehold.co/600x400');
+      return 'https://placehold.co/600x400';
     }
 
     try {
-      var imageParams = {
+      const imageParams = {
         action: "query",
         titles: "File:" + fileName,
         prop: "imageinfo",
@@ -41,118 +41,106 @@ export function initBears() {
         origin: "*"
       };
 
-      var url = baseUrl + "?" + new URLSearchParams(imageParams).toString();
-      return fetch(url)
-        .then(function(res) { return res.json(); })
-        .then(function(data) {
-          var pages = data.query.pages;
-          var page = Object.values(pages)[0];
-          if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
-            var imageUrl = page.imageinfo[0].url;
-            return checkImageUrl(imageUrl).then(function(isAccessible) {
-              return isAccessible ? imageUrl : 'https://placehold.co/600x400';
-            });
-          } else {
-            return 'https://placehold.co/600x400';
-          }
-        });
+      const url = baseUrl + "?" + new URLSearchParams(imageParams).toString();
+      const res = await fetch(url);
+      const data = await res.json();
+      
+      const pages = data.query.pages;
+      const page = Object.values(pages)[0];
+      
+      if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
+        const imageUrl = page.imageinfo[0].url;
+        const isAccessible = await checkImageUrl(imageUrl);
+        return isAccessible ? imageUrl : 'https://placehold.co/600x400';
+      } else {
+        return 'https://placehold.co/600x400';
+      }
     } catch (error) {
       console.error('Error fetching image:', error);
-      return Promise.resolve('https://placehold.co/600x400');
+      return 'https://placehold.co/600x400';
     }
-  }
+  };
 
-  function extractBears(wikitext) {
+  const renderBear = (bear) => {
     try {
-      var speciesTables = wikitext.split('{{Species table/end}}');
-      var processedNames = new Set(); // Prevent duplicates
-      var bearPromises = [];
+      const moreBears = document.querySelector('.more_bears');
+      if (moreBears) {
+        // Fix XSS vulnerability - use textContent instead of innerHTML
+        const bearDiv = document.createElement('div');
+        bearDiv.className = 'bear';
+        bearDiv.innerHTML = '<img src="' + bear.image + '" alt="' + bear.name + '" style="width:200px; height:auto;" onerror="this.src=\'https://placehold.co/600x400\'">' +
+          '<p><b>' + bear.name + '</b> (' + bear.binomial + ')</p>' +
+          '<p>Range: ' + bear.range + '</p>';
+        moreBears.appendChild(bearDiv);
+      }
+    } catch (error) {
+      console.error('Error rendering bear:', error);
+    }
+  };
 
-      speciesTables.forEach(function(table) {
-        var rows = table.split('{{Species table/row');
-        rows.forEach(function(row) {
-          var nameMatch = row.match(/\|name=\[\[(.*?)\]\]/);
-          var binomialMatch = row.match(/\|binomial=(.*?)\n/);
-          var imageMatch = row.match(/\|image=(.*?)\n/);
-          var rangeMatch = row.match(/\|range=(.*?)\n/);
+  const processBear = async (nameMatch, binomialMatch, imageMatch, rangeMatch) => {
+    const bearName = nameMatch[1];
+    const fileName = imageMatch ? imageMatch[1].trim().replace('File:', '') : '';
+    const range = rangeMatch ? rangeMatch[1].trim() : "Range information not available";
+
+    const imageUrl = await fetchImageUrl(fileName);
+    const bear = {
+      name: bearName,
+      binomial: binomialMatch[1],
+      image: imageUrl,
+      range: range
+    };
+    renderBear(bear);
+  };
+
+  const extractBears = (wikitext) => {
+    try {
+      const speciesTables = wikitext.split('{{Species table/end}}');
+      const processedNames = new Set();
+
+      speciesTables.forEach((table) => {
+        const rows = table.split('{{Species table/row');
+        rows.forEach((row) => {
+          const nameMatch = row.match(/\|name=\[\[(.*?)\]\]/);
+          const binomialMatch = row.match(/\|binomial=(.*?)\n/);
+          const imageMatch = row.match(/\|image=(.*?)\n/);
+          const rangeMatch = row.match(/\|range=(.*?)\n/);
 
           if (nameMatch && binomialMatch) {
-            var bearName = nameMatch[1];
+            const bearName = nameMatch[1];
             
-            // Skip duplicates
             if (processedNames.has(bearName)) {
               return;
             }
             processedNames.add(bearName);
 
-            var fileName = imageMatch ? imageMatch[1].trim().replace('File:', '') : '';
-            var range = rangeMatch ? rangeMatch[1].trim() : "Range information not available";
-
-            var bearPromise = fetchImageUrl(fileName).then(function(imageUrl) {
-              return {
-                name: bearName,
-                binomial: binomialMatch[1],
-                image: imageUrl,
-                range: range
-              };
-            });
-
-            bearPromises.push(bearPromise);
+            processBear(nameMatch, binomialMatch, imageMatch, rangeMatch);
           }
         });
       });
 
-      try {
-        Promise.all(bearPromises).then(function(bearsData) {
-          try {
-            var moreBears = document.querySelector('.more_bears');
-            if (moreBears && bearsData.length > 0) {
-              bearsData.forEach(function(bear) {
-                var html = '<div class="bear">' +
-                  '<img src="' + bear.image + '" alt="Image of ' + bear.name + '" style="width:200px; height:auto;" onerror="this.src=\'https://placehold.co/600x400\'">' +
-                  '<p><b>' + bear.name + '</b> (' + bear.binomial + ')</p>' +
-                  '<p>Range: ' + bear.range + '</p>' +
-                  '</div>';
-                moreBears.innerHTML += html;
-              });
-            }
-          } catch (error) {
-            console.error('Error displaying bears:', error);
-            var moreBears = document.querySelector('.more_bears');
-            if (moreBears) {
-              moreBears.innerHTML = '<p>Error displaying bear information.</p>';
-            }
-          }
-        });
-      } catch (error) {
-        console.error('Error loading bears:', error);
-        var moreBears = document.querySelector('.more_bears');
-        if (moreBears) {
-          moreBears.innerHTML = '<p>Could not load bear information. Please try again later.</p>';
-        }
-      }
-
     } catch (error) {
       console.error('Error extracting bears:', error);
-      var moreBears = document.querySelector('.more_bears');
+      const moreBears = document.querySelector('.more_bears');
       if (moreBears) {
         moreBears.innerHTML = '<p>Error processing bear data.</p>';
       }
     }
-  }
+  };
 
-  // Main fetch with try/catch
-  try {
-    fetch(baseUrl + "?" + new URLSearchParams(params).toString())
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        extractBears(data.parse.wikitext['*']);
-      });
-  } catch (error) {
-    console.error('Error initializing bear fetch:', error);
-    var moreBears = document.querySelector('.more_bears');
-    if (moreBears) {
-      moreBears.innerHTML = '<p>Error loading bear data.</p>';
+  const fetchBearData = async () => {
+    try {
+      const res = await fetch(baseUrl + "?" + new URLSearchParams(params).toString());
+      const data = await res.json();
+      extractBears(data.parse.wikitext['*']);
+    } catch (error) {
+      console.error('Error initializing bear fetch:', error);
+      const moreBears = document.querySelector('.more_bears');
+      if (moreBears) {
+        moreBears.innerHTML = '<p>Error loading bear data.</p>';
+      }
     }
-  }
-} 
+  };
+
+  fetchBearData();
+}; 

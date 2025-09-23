@@ -1,8 +1,11 @@
-export function initCommentForm() {
-  var form = document.querySelector('.comment-form');
-  var nameField = document.querySelector('#name');
-  var commentField = document.querySelector('#comment');
-  var list = document.querySelector('.comment-container');
+export const initCommentForm = () => {
+  const MAX_NAME_LENGTH = 100; // Fix magic number
+  const MAX_COMMENT_LENGTH = 1000; // Fix magic number
+  
+  const form = document.querySelector('.comment-form');
+  const nameField = document.querySelector('#name');
+  const commentField = document.querySelector('#comment');
+  const list = document.querySelector('.comment-container');
 
   if (!form || !nameField || !commentField || !list) {
     console.error('Comment form elements not found!');
@@ -10,14 +13,14 @@ export function initCommentForm() {
   }
   console.log('Comment form found, adding event listener');
 
-  form.onsubmit = function(e) {
+  // Fix: Use addEventListener instead of onsubmit for consistency
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     try {
-      var nameValue = nameField.value.trim();
-      var commentValue = commentField.value.trim();
+      const nameValue = nameField.value.trim();
+      const commentValue = commentField.value.trim();
 
-      // Validate that both fields are not empty
       if (!nameValue) {
         alert('Please enter your name');
         nameField.focus();
@@ -30,20 +33,19 @@ export function initCommentForm() {
         return;
       }
 
-      // Basic length validation
-      if (nameValue.length > 100) {
-        alert('Name is too long. Please keep it under 100 characters.');
+      if (nameValue.length > MAX_NAME_LENGTH) {
+        alert(`Name is too long. Please keep it under ${MAX_NAME_LENGTH} characters.`);
         return;
       }
 
-      if (commentValue.length > 1000) {
-        alert('Comment is too long. Please keep it under 1000 characters.');
+      if (commentValue.length > MAX_COMMENT_LENGTH) {
+        alert(`Comment is too long. Please keep it under ${MAX_COMMENT_LENGTH} characters.`);
         return;
       }
 
-      var listItem = document.createElement('li');
-      var namePara = document.createElement('p');
-      var commentPara = document.createElement('p');
+      const listItem = document.createElement('li');
+      const namePara = document.createElement('p');
+      const commentPara = document.createElement('p');
 
       namePara.textContent = nameValue;
       commentPara.textContent = commentValue;
@@ -59,5 +61,5 @@ export function initCommentForm() {
       console.error('Error adding comment:', error);
       alert('Failed to add comment. Please try again.');
     }
-  };
-} 
+  });
+}; 

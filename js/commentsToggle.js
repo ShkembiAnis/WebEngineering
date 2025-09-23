@@ -1,6 +1,6 @@
-export function initCommentsToggle() {
-  var showHideBtn = document.querySelector('.show-hide');
-  var commentWrapper = document.querySelector('.comment-wrapper');
+export const initCommentsToggle = () => {
+  const showHideBtn = document.querySelector('.show-hide');
+  const commentWrapper = document.querySelector('.comment-wrapper');
 
   if (!showHideBtn || !commentWrapper) {
     console.error('Comments toggle elements not found!');
@@ -9,9 +9,9 @@ export function initCommentsToggle() {
 
   commentWrapper.style.display = 'none';
 
-  showHideBtn.onclick = function() {
+  showHideBtn.onclick = () => {
     try {
-      var showHideText = showHideBtn.textContent;
+      const showHideText = showHideBtn.textContent;
       if (showHideText === 'Show comment' || showHideText === 'Show comments') {
         showHideBtn.textContent = 'Hide comments';
         commentWrapper.style.display = 'block';
@@ -24,4 +24,4 @@ export function initCommentsToggle() {
       alert('Comment toggle failed. Please refresh the page.');
     }
   };
-} 
+}; 
