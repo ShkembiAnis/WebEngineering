@@ -2,18 +2,26 @@ export function initCommentsToggle() {
   var showHideBtn = document.querySelector('.show-hide');
   var commentWrapper = document.querySelector('.comment-wrapper');
 
-  if (!showHideBtn || !commentWrapper) return;
+  if (!showHideBtn || !commentWrapper) {
+    console.error('Comments toggle elements not found!');
+    return;
+  }
 
   commentWrapper.style.display = 'none';
 
   showHideBtn.onclick = function() {
-    var showHideText = showHideBtn.textContent;
-    if (showHideText === 'Show comment') {
-      showHideBtn.textContent = 'Hide comments';
-      commentWrapper.style.display = 'block';
-    } else {
-      showHideBtn.textContent = 'Show comments';
-      commentWrapper.style.display = 'none';
+    try {
+      var showHideText = showHideBtn.textContent;
+      if (showHideText === 'Show comment' || showHideText === 'Show comments') {
+        showHideBtn.textContent = 'Hide comments';
+        commentWrapper.style.display = 'block';
+      } else {
+        showHideBtn.textContent = 'Show comments';
+        commentWrapper.style.display = 'none';
+      }
+    } catch (error) {
+      console.error('Error toggling comments:', error);
+      alert('Comment toggle failed. Please refresh the page.');
     }
   };
 } 

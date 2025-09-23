@@ -5,7 +5,7 @@ export function initCommentForm() {
   var list = document.querySelector('.comment-container');
 
   if (!form || !nameField || !commentField || !list) {
-    console.error('Comment form elements not found!', { form, nameField, commentField, list });
+    console.error('Comment form elements not found!');
     return;
   }
   console.log('Comment form found, adding event listener');
@@ -13,22 +13,51 @@ export function initCommentForm() {
   form.onsubmit = function(e) {
     e.preventDefault();
 
-    var listItem = document.createElement('li');
-    var namePara = document.createElement('p');
-    var commentPara = document.createElement('p');
-    var nameValue = nameField.value;
-    var commentValue = commentField.value;
+    try {
+      var nameValue = nameField.value.trim();
+      var commentValue = commentField.value.trim();
 
-    namePara.textContent = nameValue;
-    commentPara.textContent = commentValue;
+      // Validate that both fields are not empty
+      if (!nameValue) {
+        alert('Please enter your name');
+        nameField.focus();
+        return;
+      }
 
-    console.log(nameValue);
+      if (!commentValue) {
+        alert('Please enter a comment');
+        commentField.focus();
+        return;
+      }
 
-    list.appendChild(listItem);
-    listItem.appendChild(namePara);
-    listItem.appendChild(commentPara);
+      // Basic length validation
+      if (nameValue.length > 100) {
+        alert('Name is too long. Please keep it under 100 characters.');
+        return;
+      }
 
-    nameField.value = '';
-    commentField.value = '';
+      if (commentValue.length > 1000) {
+        alert('Comment is too long. Please keep it under 1000 characters.');
+        return;
+      }
+
+      var listItem = document.createElement('li');
+      var namePara = document.createElement('p');
+      var commentPara = document.createElement('p');
+
+      namePara.textContent = nameValue;
+      commentPara.textContent = commentValue;
+
+      list.appendChild(listItem);
+      listItem.appendChild(namePara);
+      listItem.appendChild(commentPara);
+
+      nameField.value = '';
+      commentField.value = '';
+
+    } catch (error) {
+      console.error('Error adding comment:', error);
+      alert('Failed to add comment. Please try again.');
+    }
   };
 } 
