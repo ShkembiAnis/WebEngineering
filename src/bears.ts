@@ -26,26 +26,32 @@ interface WikipediaParseResponse {
 }
 
 export const initBears = (): void => {
-  const baseUrl: string = "https://en.wikipedia.org/w/api.php";
-  const title: string = "List_of_ursids";
+  const baseUrl: string = 'https://en.wikipedia.org/w/api.php';
+  const title: string = 'List_of_ursids';
   const IMAGE_TIMEOUT: number = 5000; // Fix magic number
 
   const params = {
-    action: "parse",
+    action: 'parse',
     page: title,
-    prop: "wikitext",
-    section: "3",
-    format: "json",
-    origin: "*"
+    prop: 'wikitext',
+    section: '3',
+    format: 'json',
+    origin: '*',
   };
 
-  const checkImageUrl = (url: string): Promise<boolean> => {
-    return new Promise((resolve) => {
+  const checkImageUrl = async (url: string): Promise<boolean> => {
+    return await new Promise((resolve) => {
       try {
         const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        setTimeout(() => resolve(false), IMAGE_TIMEOUT); // Use constant instead of magic number
+        img.onload = () => {
+          resolve(true);
+        };
+        img.onerror = () => {
+          resolve(false);
+        };
+        setTimeout(() => {
+          resolve(false);
+        }, IMAGE_TIMEOUT); // Use constant instead of magic number
         img.src = url;
       } catch (error) {
         resolve(false);
@@ -60,21 +66,21 @@ export const initBears = (): void => {
 
     try {
       const imageParams = {
-        action: "query",
-        titles: "File:" + fileName,
-        prop: "imageinfo",
-        iiprop: "url",
-        format: "json",
-        origin: "*"
+        action: 'query',
+        titles: 'File:' + fileName,
+        prop: 'imageinfo',
+        iiprop: 'url',
+        format: 'json',
+        origin: '*',
       };
 
-      const url = baseUrl + "?" + new URLSearchParams(imageParams).toString();
+      const url = baseUrl + '?' + new URLSearchParams(imageParams).toString();
       const res = await fetch(url);
       const data: WikipediaResponse = await res.json();
-      
+
       const pages = data.query.pages;
       const page = Object.values(pages)[0];
-      
+
       if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
         const imageUrl = page.imageinfo[0].url;
         const isAccessible = await checkImageUrl(imageUrl);
@@ -95,9 +101,20 @@ export const initBears = (): void => {
         // Fix XSS vulnerability - use textContent instead of innerHTML
         const bearDiv = document.createElement('div');
         bearDiv.className = 'bear';
-        bearDiv.innerHTML = '<img src="' + bear.image + '" alt="' + bear.name + '" style="width:200px; height:auto;" onerror="this.src=\'https://placehold.co/600x400\'">' +
-          '<p><b>' + bear.name + '</b> (' + bear.binomial + ')</p>' +
-          '<p>Range: ' + bear.range + '</p>';
+        bearDiv.innerHTML =
+          '<img src="' +
+          bear.image +
+          '" alt="' +
+          bear.name +
+          '" style="width:200px; height:auto;" onerror="this.src=\'https://placehold.co/600x400\'">' +
+          '<p><b>' +
+          bear.name +
+          '</b> (' +
+          bear.binomial +
+          ')</p>' +
+          '<p>Range: ' +
+          bear.range +
+          '</p>';
         moreBears.appendChild(bearDiv);
       }
     } catch (error) {
@@ -106,21 +123,25 @@ export const initBears = (): void => {
   };
 
   const processBear = async (
-    nameMatch: RegExpMatchArray, 
-    binomialMatch: RegExpMatchArray, 
-    imageMatch: RegExpMatchArray | null, 
+    nameMatch: RegExpMatchArray,
+    binomialMatch: RegExpMatchArray,
+    imageMatch: RegExpMatchArray | null,
     rangeMatch: RegExpMatchArray | null
   ): Promise<void> => {
     const bearName: string = nameMatch[1];
-    const fileName: string = imageMatch ? imageMatch[1].trim().replace('File:', '') : '';
-    const range: string = rangeMatch ? rangeMatch[1].trim() : "Range information not available";
+    const fileName: string = imageMatch
+      ? imageMatch[1].trim().replace('File:', '')
+      : '';
+    const range: string = rangeMatch
+      ? rangeMatch[1].trim()
+      : 'Range information not available';
 
     const imageUrl = await fetchImageUrl(fileName);
     const bear: Bear = {
       name: bearName,
       binomial: binomialMatch[1],
       image: imageUrl,
-      range: range
+      range,
     };
     renderBear(bear);
   };
@@ -140,7 +161,7 @@ export const initBears = (): void => {
 
           if (nameMatch && binomialMatch) {
             const bearName = nameMatch[1];
-            
+
             if (processedNames.has(bearName)) {
               return;
             }
@@ -150,7 +171,6 @@ export const initBears = (): void => {
           }
         });
       });
-
     } catch (error) {
       console.error('Error extracting bears:', error);
       const moreBears = document.querySelector('.more_bears');
@@ -162,7 +182,9 @@ export const initBears = (): void => {
 
   const fetchBearData = async (): Promise<void> => {
     try {
-      const res = await fetch(baseUrl + "?" + new URLSearchParams(params).toString());
+      const res = await fetch(
+        baseUrl + '?' + new URLSearchParams(params).toString()
+      );
       const data: WikipediaParseResponse = await res.json();
       extractBears(data.parse.wikitext['*']);
     } catch (error) {

@@ -1,11 +1,11 @@
 export const initCommentForm = (): void => {
   const MAX_NAME_LENGTH: number = 100; // Fix magic number
   const MAX_COMMENT_LENGTH: number = 1000; // Fix magic number
-  
-  const form = document.querySelector('.comment-form') as HTMLFormElement;
-  const nameField = document.querySelector('#name') as HTMLInputElement;
-  const commentField = document.querySelector('#comment') as HTMLInputElement;
-  const list = document.querySelector('.comment-container') as HTMLUListElement;
+
+  const form = document.querySelector('.comment-form')!;
+  const nameField = document.querySelector('#name')!;
+  const commentField = document.querySelector('#comment')!;
+  const list = document.querySelector('.comment-container')!;
 
   if (!form || !nameField || !commentField || !list) {
     console.error('Comment form elements not found!');
@@ -34,12 +34,16 @@ export const initCommentForm = (): void => {
       }
 
       if (nameValue.length > MAX_NAME_LENGTH) {
-        alert(`Name is too long. Please keep it under ${MAX_NAME_LENGTH} characters.`);
+        alert(
+          `Name is too long. Please keep it under ${MAX_NAME_LENGTH} characters.`
+        );
         return;
       }
 
       if (commentValue.length > MAX_COMMENT_LENGTH) {
-        alert(`Comment is too long. Please keep it under ${MAX_COMMENT_LENGTH} characters.`);
+        alert(
+          `Comment is too long. Please keep it under ${MAX_COMMENT_LENGTH} characters.`
+        );
         return;
       }
 
@@ -56,7 +60,6 @@ export const initCommentForm = (): void => {
 
       nameField.value = '';
       commentField.value = '';
-
     } catch (error) {
       console.error('Error adding comment:', error);
       alert('Failed to add comment. Please try again.');

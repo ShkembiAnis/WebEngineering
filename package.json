@@ -7,7 +7,11 @@
     "dev": "vite",
     "build": "npx tsc && vite build",
     "preview": "vite preview",
-    "type-check": "npx tsc --noEmit"
+    "type-check": "npx tsc --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts"
   },
   "repository": {
     "type": "git",
@@ -21,6 +25,13 @@
   },
   "homepage": "https://github.com/ShkembiAnis/WebEngineering#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-config-standard-with-typescript": "^43.0.1",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
     "vite": "^6.3.7"
   }
 }

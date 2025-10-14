@@ -1,6 +1,6 @@
 export const initCommentsToggle = (): void => {
-  const showHideBtn = document.querySelector('.show-hide') as HTMLButtonElement;
-  const commentWrapper = document.querySelector('.comment-wrapper') as HTMLDivElement;
+  const showHideBtn = document.querySelector('.show-hide')!;
+  const commentWrapper = document.querySelector('.comment-wrapper')!;
 
   if (!showHideBtn || !commentWrapper) {
     console.error('Comments toggle elements not found!');
