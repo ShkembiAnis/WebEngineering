@@ -5,13 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "npx tsc && vite build",
     "preview": "vite preview",
     "type-check": "npx tsc --noEmit",
-    "lint": "eslint src/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts --fix",
-    "format": "prettier --write src/**/*.ts",
-    "format:check": "prettier --check src/**/*.ts",
+    "lint": "eslint src/**/*.{js,ts}",
+    "lint:fix": "eslint src/**/*.{js,ts} --fix",
+    "format": "prettier --write src/**/*.{js,ts}",
+    "format:check": "prettier --check src/**/*.{js,ts}",
     "clean": "rimraf dist"
   },
   "repository": {
