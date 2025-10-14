@@ -1,6 +1,6 @@
 export const initSearch = (): void => {
-  const form = document.querySelector('.search')!;
-  if (!form) {
+  const form = document.querySelector('.search');
+  if (form === null) {
     console.error('Search form not found!');
     return;
   }
@@ -13,9 +13,9 @@ export const initSearch = (): void => {
       // Clear previous highlights
       document.querySelectorAll('.highlight').forEach((el) => {
         const parent = el.parentNode;
-        if (parent) {
+        if (parent !== null) {
           parent.replaceChild(
-            document.createTextNode(el.textContent || ''),
+            document.createTextNode(el.textContent ?? ''),
             el
           );
           parent.normalize();
@@ -24,7 +24,7 @@ export const initSearch = (): void => {
 
       const target = e.target as HTMLFormElement;
       const searchKey = (target.q as HTMLInputElement).value.trim();
-      if (!searchKey) return;
+      if (searchKey === '') return;
 
       const regex = new RegExp(
         '(' + searchKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')',
@@ -34,14 +34,18 @@ export const initSearch = (): void => {
       const walk = (node: Node): void => {
         if (node.nodeType === 3) {
           // Text node
-          const match = (node.nodeValue || '').match(regex);
-          if (match) {
+          const nodeValue = node.nodeValue ?? '';
+          const match = nodeValue.match(regex);
+          if (match !== null) {
             const span = document.createElement('span');
-            span.innerHTML = (node.nodeValue || '').replace(
+            span.innerHTML = nodeValue.replace(
               regex,
               '<mark class="highlight">$1</mark>'
             );
-            node.replaceWith(...span.childNodes);
+            const parentNode = node.parentNode;
+            if (parentNode !== null) {
+              parentNode.replaceChild(span, node);
+            }
           }
         } else if (
           node.nodeType === 1 &&
@@ -55,7 +59,7 @@ export const initSearch = (): void => {
 
       // Only search within article content
       const articleElement = document.querySelector('article');
-      if (articleElement) {
+      if (articleElement !== null) {
         walk(articleElement);
       }
     } catch (error) {

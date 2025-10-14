@@ -1,7 +1,7 @@
-import { initSearch } from './search.js';
-import { initCommentsToggle } from './commentsToggle.js';
-import { initCommentForm } from './commentForm.js';
-import { initBears } from './bears.js';
+import { initSearch } from './search.ts';
+import { initCommentsToggle } from './commentsToggle.ts';
+import { initCommentForm } from './commentForm.ts';
+import { initBears } from './bears.ts';
 
 console.log('Initializing modules...');
 
