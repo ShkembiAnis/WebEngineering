@@ -15,3 +15,5 @@ try {
   console.error('Error initializing modules:', error);
   alert('Some features may not work properly. Please refresh the page.');
 }
+
+// testing pre commit hooks
