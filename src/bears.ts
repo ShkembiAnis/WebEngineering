@@ -60,7 +60,7 @@ export const initBears = (): void => {
   };
 
   const fetchImageUrl = async (fileName: string): Promise<string> => {
-    if (!fileName || fileName.trim() === '') {
+    if (fileName === '' || fileName.trim() === '') {
       return 'https://placehold.co/600x400';
     }
 
@@ -81,7 +81,10 @@ export const initBears = (): void => {
       const pages = data.query.pages;
       const page = Object.values(pages)[0];
 
-      if (page.imageinfo && page.imageinfo[0] && page.imageinfo[0].url) {
+      if (
+        page?.imageinfo?.[0]?.url !== null &&
+        page?.imageinfo?.[0]?.url !== undefined
+      ) {
         const imageUrl = page.imageinfo[0].url;
         const isAccessible = await checkImageUrl(imageUrl);
         return isAccessible ? imageUrl : 'https://placehold.co/600x400';
@@ -97,7 +100,7 @@ export const initBears = (): void => {
   const renderBear = (bear: Bear): void => {
     try {
       const moreBears = document.querySelector('.more_bears');
-      if (moreBears) {
+      if (moreBears !== null) {
         // Fix XSS vulnerability - use textContent instead of innerHTML
         const bearDiv = document.createElement('div');
         bearDiv.className = 'bear';
@@ -129,12 +132,12 @@ export const initBears = (): void => {
     rangeMatch: RegExpMatchArray | null
   ): Promise<void> => {
     const bearName: string = nameMatch[1];
-    const fileName: string = imageMatch
-      ? imageMatch[1].trim().replace('File:', '')
-      : '';
-    const range: string = rangeMatch
-      ? rangeMatch[1].trim()
-      : 'Range information not available';
+    const fileName: string =
+      imageMatch !== null ? imageMatch[1].trim().replace('File:', '') : '';
+    const range: string =
+      rangeMatch !== null
+        ? rangeMatch[1].trim()
+        : 'Range information not available';
 
     const imageUrl = await fetchImageUrl(fileName);
     const bear: Bear = {
@@ -159,7 +162,7 @@ export const initBears = (): void => {
           const imageMatch = row.match(/\|image=(.*?)\n/);
           const rangeMatch = row.match(/\|range=(.*?)\n/);
 
-          if (nameMatch && binomialMatch) {
+          if (nameMatch !== null && binomialMatch !== null) {
             const bearName = nameMatch[1];
 
             if (processedNames.has(bearName)) {
@@ -167,14 +170,14 @@ export const initBears = (): void => {
             }
             processedNames.add(bearName);
 
-            processBear(nameMatch, binomialMatch, imageMatch, rangeMatch);
+            void processBear(nameMatch, binomialMatch, imageMatch, rangeMatch);
           }
         });
       });
     } catch (error) {
       console.error('Error extracting bears:', error);
       const moreBears = document.querySelector('.more_bears');
-      if (moreBears) {
+      if (moreBears !== null) {
         moreBears.innerHTML = '<p>Error processing bear data.</p>';
       }
     }
@@ -190,11 +193,11 @@ export const initBears = (): void => {
     } catch (error) {
       console.error('Error initializing bear fetch:', error);
       const moreBears = document.querySelector('.more_bears');
-      if (moreBears) {
+      if (moreBears !== null) {
         moreBears.innerHTML = '<p>Error loading bear data.</p>';
       }
     }
   };
 
-  fetchBearData();
+  void fetchBearData();
 };
