@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npx tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "type-check": "npx tsc --noEmit",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",
-    "format:check": "prettier --check src/**/*.ts"
+    "format:check": "prettier --check src/**/*.ts",
+    "clean": "rimraf dist"
   },
   "repository": {
     "type": "git",
@@ -32,6 +33,7 @@
     "eslint-config-standard-with-typescript": "^43.0.1",
     "eslint-plugin-prettier": "^5.5.4",
     "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
     "vite": "^6.3.7"
   }
 }

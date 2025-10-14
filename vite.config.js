@@ -4,6 +4,7 @@ export default defineConfig({
   root: '.',
   build: {
     outDir: 'dist',
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         main: './index.html'
@@ -16,6 +17,11 @@ export default defineConfig({
   },
   esbuild: {
     target: 'es2020'
+  },
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
   }
 });
 
