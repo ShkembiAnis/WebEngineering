@@ -198,7 +198,15 @@ audio {
 }
 
 .show-hide {
+  display: inline-block;
   cursor: pointer;
+  text-align: center;
+  width: 150px;
+}
+
+.show-hide:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 2px;
 }
 
 .comments h3 {
@@ -227,11 +235,6 @@ audio {
 .comment-form input {
   margin-left: 1rem;
   flex: 6;
-}
-
-.show-hide {
-  text-align: center;
-  width: 150px;
 }
 
 .comment-form input, .comment-form label, .show-hide {

@@ -1,30 +1,30 @@
 export const initCommentsToggle = (): void => {
-  const showHideBtn = document.querySelector('.show-hide');
-  const commentWrapper = document.querySelector('.comment-wrapper');
+  const showHideBtn = document.querySelector<HTMLButtonElement>('.show-hide');
+  const commentWrapper =
+    document.querySelector<HTMLElement>('#comments-wrapper');
 
   if (showHideBtn === null || commentWrapper === null) {
     console.error('Comments toggle elements not found!');
     return;
   }
 
-  const buttonElement = showHideBtn as HTMLElement;
-  const wrapperElement = commentWrapper as HTMLElement;
+  const buttonElement = showHideBtn;
+  const wrapperElement = commentWrapper;
 
   wrapperElement.style.display = 'none';
+  buttonElement.setAttribute('aria-expanded', 'false');
 
-  buttonElement.addEventListener('click', () => {
+  const toggleComments = (): void => {
     try {
-      const showHideText = buttonElement.textContent ?? '';
-      if (showHideText === 'Show comment' || showHideText === 'Show comments') {
-        buttonElement.textContent = 'Hide comments';
-        wrapperElement.style.display = 'block';
-      } else {
-        buttonElement.textContent = 'Show comments';
-        wrapperElement.style.display = 'none';
-      }
+      const isHidden = wrapperElement.style.display === 'none';
+      buttonElement.textContent = isHidden ? 'Hide comments' : 'Show comments';
+      wrapperElement.style.display = isHidden ? 'block' : 'none';
+      buttonElement.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
     } catch (error) {
       console.error('Error toggling comments:', error);
       alert('Comment toggle failed. Please refresh the page.');
     }
-  });
+  };
+
+  buttonElement.addEventListener('click', toggleComments);
 };
