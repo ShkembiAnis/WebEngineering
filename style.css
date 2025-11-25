@@ -218,7 +218,7 @@ audio {
   padding: 0 3rem 1rem;
 }
 
-.comment-form label {
+.comment-form .field-label {
   align-self: center;
   flex: 2;
   text-align: right;
