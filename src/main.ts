@@ -1,6 +1,6 @@
 import { initSearch } from './search.ts';
 import { initCommentsToggle } from './commentsToggle.ts';
-import { initCommentForm } from './commentForm.ts';
+import { registerCommentFormComponent } from './commentForm.ts';
 import { initBears } from './bears.ts';
 
 console.log('Initializing modules...');
@@ -8,7 +8,7 @@ console.log('Initializing modules...');
 try {
   initSearch();
   initCommentsToggle();
-  initCommentForm();
+  registerCommentFormComponent();
   initBears();
   console.log('Module initialization complete');
 } catch (error) {

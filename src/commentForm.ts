@@ -1,46 +1,141 @@
-export const initCommentForm = (): void => {
-  const MAX_NAME_LENGTH: number = 100; // Fix magic number
-  const MAX_COMMENT_LENGTH: number = 1000; // Fix magic number
+const MAX_NAME_LENGTH = 100;
+const MAX_COMMENT_LENGTH = 1000;
 
-  const form = document.querySelector('.comment-form');
-  const nameField = document.querySelector('#name');
-  const commentField = document.querySelector('#comment');
-  const list = document.querySelector('.comment-container');
+const template = document.createElement('template');
 
-  if (
-    form === null ||
-    nameField === null ||
-    commentField === null ||
-    list === null
-  ) {
-    console.error('Comment form elements not found!');
-    return;
+template.innerHTML = `
+  <style>
+    :host {
+      display: block;
+    }
+
+    section {
+      margin-bottom: 3rem;
+    }
+
+    h3 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      font-family: 'Sonsie One', cursive;
+      color: var(--color-text, #2a2a2a);
+      text-align: center;
+    }
+
+    form {
+      display: block;
+    }
+
+    .flex-pair {
+      display: flex;
+      padding: 0 3rem 1rem;
+    }
+
+    .field-label {
+      align-self: center;
+      flex: 2;
+      text-align: right;
+      font-family: 'Open Sans Condensed', sans-serif;
+      font-size: 1.6rem;
+      line-height: 32px;
+      color: var(--color-text, #2a2a2a);
+    }
+
+    input[type="text"] {
+      margin-left: 1rem;
+      flex: 6;
+      font-family: 'Open Sans Condensed', sans-serif;
+      font-size: 1.6rem;
+      line-height: 32px;
+      padding: 0 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 2px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      padding-bottom: 1rem;
+    }
+
+    input[type="submit"] {
+      width: 30%;
+      min-width: 160px;
+      background: #333;
+      border: 0;
+      color: white;
+      font-family: 'Open Sans Condensed', sans-serif;
+      font-size: 1.6rem;
+      line-height: 32px;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:focus-visible {
+      outline: 3px solid white;
+      outline-offset: 2px;
+    }
+  </style>
+  <section>
+    <h3 id="comment-form-title">Add comment</h3>
+    <form aria-labelledby="comment-form-title" novalidate>
+      <div class="flex-pair">
+        <label class="field-label" for="name">Your name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name">
+      </div>
+      <div class="flex-pair">
+        <label class="field-label" for="comment">Your comment:</label>
+        <input type="text" id="comment" name="comment" placeholder="Enter your comment">
+      </div>
+      <div class="button-row">
+        <input type="submit" value="Submit comment">
+      </div>
+    </form>
+  </section>
+`;
+
+class CommentFormElement extends HTMLElement {
+  private readonly form: HTMLFormElement | null;
+  private readonly nameInput: HTMLInputElement | null;
+  private readonly commentInput: HTMLInputElement | null;
+
+  constructor() {
+    super();
+    const shadowRoot = this.shadowRoot ?? this.attachShadow({ mode: 'open' });
+    shadowRoot.appendChild(template.content.cloneNode(true));
+
+    this.form = shadowRoot.querySelector('form');
+    this.nameInput = shadowRoot.querySelector('#name');
+    this.commentInput = shadowRoot.querySelector('#comment');
   }
 
-  const formElement = form as HTMLFormElement;
-  const nameInput = nameField as HTMLInputElement;
-  const commentInput = commentField as HTMLInputElement;
-  const listElement = list as HTMLUListElement;
+  connectedCallback(): void {
+    this.form?.addEventListener('submit', this.handleSubmit);
+  }
 
-  console.log('Comment form found, adding event listener');
+  disconnectedCallback(): void {
+    this.form?.removeEventListener('submit', this.handleSubmit);
+  }
 
-  // Fix: Use addEventListener instead of onsubmit for consistency
-  formElement.addEventListener('submit', (e: Event) => {
-    e.preventDefault();
+  private readonly handleSubmit = (event: Event): void => {
+    event.preventDefault();
 
     try {
-      const nameValue = nameInput.value.trim();
-      const commentValue = commentInput.value.trim();
+      if (this.nameInput === null || this.commentInput === null) {
+        alert('Comment form is not ready. Please refresh the page.');
+        return;
+      }
+
+      const nameValue = this.nameInput.value.trim();
+      const commentValue = this.commentInput.value.trim();
 
       if (nameValue === '') {
         alert('Please enter your name');
-        nameInput.focus();
+        this.nameInput.focus();
         return;
       }
 
       if (commentValue === '') {
         alert('Please enter a comment');
-        commentInput.focus();
+        this.commentInput.focus();
         return;
       }
 
@@ -58,6 +153,14 @@ export const initCommentForm = (): void => {
         return;
       }
 
+      const listElement = this.getCommentList();
+
+      if (listElement === null) {
+        console.error('Comment list not found in the DOM.');
+        alert('Comments could not be added. Please refresh the page.');
+        return;
+      }
+
       const listItem = document.createElement('li');
       const namePara = document.createElement('p');
       const commentPara = document.createElement('p');
@@ -69,11 +172,22 @@ export const initCommentForm = (): void => {
       listItem.appendChild(namePara);
       listItem.appendChild(commentPara);
 
-      nameInput.value = '';
-      commentInput.value = '';
+      this.nameInput.value = '';
+      this.commentInput.value = '';
     } catch (error) {
       console.error('Error adding comment:', error);
       alert('Failed to add comment. Please try again.');
     }
-  });
+  };
+
+  private getCommentList(): HTMLUListElement | null {
+    const commentsSection = this.closest('.comments');
+    return commentsSection?.querySelector('.comment-container') ?? null;
+  }
+}
+
+export const registerCommentFormComponent = (): void => {
+  if (customElements.get('comment-form') === undefined) {
+    customElements.define('comment-form', CommentFormElement);
+  }
 };
