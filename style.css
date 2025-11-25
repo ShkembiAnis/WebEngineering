@@ -1,5 +1,11 @@
 /* || General setup */
 
+:root {
+  --color-text: #2a2a2a;
+  --color-surface: #f1f5f0;
+  --color-accent: #114d2c;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -20,12 +26,17 @@ body {
 
 font[size="7"], font[size="6"], font[size="5"] {
   font-family: 'Sonsie One', cursive;
-  color: #2a2a2a;
+  color: var(--color-text);
 }
 
 p, input, li, table, label {
   font-family: 'Open Sans Condensed', sans-serif;
-  color: #2a2a2a;
+  color: var(--color-text);
+}
+
+.header {
+  background-color: var(--color-accent);
+  padding: 2rem;
 }
 
 font[size="7"] {
@@ -51,11 +62,8 @@ p, li, table {
 
 /* || header layout */
 
-div[class="nav"], article, footer, .secondary {
-  background-color: green;
-}
-
 article, footer, .secondary {
+  background-color: var(--color-surface);
   padding: 10px 30px;
 }
 
@@ -65,7 +73,7 @@ article {
 
 div[class="nav"] {
   height: 50px;
-  background-color: ff80ff;
+  background-color: var(--color-accent);
   display: flex;
   padding: 1% 0;
   margin-bottom: 10px;
@@ -89,7 +97,7 @@ div[class="nav"] a {
   font-size: 2rem;
   text-transform: uppercase;
   text-decoration: none;
-  color: black;
+  color: white;
 }
 
 div[class="nav"] .search {
