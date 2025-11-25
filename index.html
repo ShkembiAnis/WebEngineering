@@ -86,11 +86,17 @@
 
         <h3>Mating rituals</h3>
         <p>Bears are romantic creatures by nature...</p>
-        <audio controls>
-          <source src="media/bear.mp3" type="audio/mp3">
-          <source src="media/bear.ogg" type="audio/ogg">
-          <p>It looks like your browser doesn't support HTML5 audio players.</p>
-        </audio>
+        <figure class="media-block">
+          <audio controls aria-describedby="bear-audio-transcript">
+            <source src="media/bear.mp3" type="audio/mp3">
+            <source src="media/bear.ogg" type="audio/ogg">
+            <p>It looks like your browser doesn't support HTML5 audio players.</p>
+          </audio>
+          <figcaption id="bear-audio-transcript">
+            <strong>Transcript:</strong>
+            <p>This isn't really an audio fact file about bears, but it is an audio file you can transcribe.</p>
+          </figcaption>
+        </figure>
 
         <aside>
           <h3>About the author</h3>
