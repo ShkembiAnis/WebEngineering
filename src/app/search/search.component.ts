@@ -1,13 +1,35 @@
-export const initSearch = (): void => {
-  const form = document.querySelector('.search');
-  if (form === null) {
-    console.error('Search form not found!');
-    return;
-  }
-  console.log('Search form found, adding event listener');
+import { Component, type ElementRef, type Renderer2 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
-  form.addEventListener('submit', (e: Event) => {
-    e.preventDefault();
+@Component({
+  selector: 'app-search',
+  standalone: true,
+  imports: [FormsModule],
+  template: `
+    <form class="search" role="search" (submit)="handleSearch($event)">
+      <label for="site-search" class="sr-only">Search the site</label>
+      <input
+        id="site-search"
+        type="search"
+        name="q"
+        [(ngModel)]="searchQuery"
+        placeholder="Search query"
+      />
+      <input type="submit" value="Go!" />
+    </form>
+  `,
+  styles: [],
+})
+export class SearchComponent {
+  searchQuery = '';
+
+  constructor(
+    private readonly elementRef: ElementRef,
+    private readonly renderer: Renderer2
+  ) {}
+
+  handleSearch(event: Event): void {
+    event.preventDefault();
 
     try {
       // Clear previous highlights
@@ -22,8 +44,7 @@ export const initSearch = (): void => {
         }
       });
 
-      const target = e.target as HTMLFormElement;
-      const searchKey = (target.q as HTMLInputElement).value.trim();
+      const searchKey = this.searchQuery.trim();
       if (searchKey === '') return;
 
       const regex = new RegExp(
@@ -66,5 +87,5 @@ export const initSearch = (): void => {
       console.error('Search error:', error);
       alert('Search failed. Please try a different search term.');
     }
-  });
-};
+  }
+}

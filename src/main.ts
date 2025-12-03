@@ -1,19 +1,7 @@
-import { initSearch } from './search.ts';
-import { initCommentsToggle } from './commentsToggle.ts';
-import { registerCommentFormComponent } from './commentForm.ts';
-import { initBears } from './bears.ts';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { AppComponent } from './app/app.component';
 
-console.log('Initializing modules...');
-
-try {
-  initSearch();
-  initCommentsToggle();
-  registerCommentFormComponent();
-  initBears();
-  console.log('Module initialization complete');
-} catch (error) {
-  console.error('Error initializing modules:', error);
-  alert('Some features may not work properly. Please refresh the page.');
-}
-
-// testing pre commit hooks
+bootstrapApplication(AppComponent, appConfig).catch((err) => {
+  console.error(err);
+});
