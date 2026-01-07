@@ -17,13 +17,13 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        config.setAllowCredentials(true);
-        
+        config.setAllowCredentials(false);
+
         config.setAllowedOrigins(List.of("http://localhost:4200"));
         
         config.addAllowedHeader("*");
         
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        config.setAllowedMethods(Arrays.asList("GET", "OPTIONS"));
         
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
