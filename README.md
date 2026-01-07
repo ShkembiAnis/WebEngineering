@@ -51,10 +51,13 @@ WebEngineering/
 ## Features
 
 - Wonderful UI-design :heart_eyes:
-- Loads bear data using [Wikipedia API](https://www.mediawiki.org/wiki/API:Main_page) :bear:
+- Loads bear data using [Wikipedia API](https://www.mediawiki.org/wiki/API:Main_page) via backend :bear:
   - Original Wikipedia Page can be found [here](https://en.wikipedia.org/wiki/List_of_ursids)
-- Angular frontend with TypeScript
+- Angular frontend with TypeScript and HttpClient
 - Spring Boot REST API backend
+- Full-stack integration: Frontend connects to backend API
+- Comment form with validation
+- Search functionality with text highlighting
 
 ## Running the Application
 
@@ -94,8 +97,19 @@ The Spring Boot API runs on: **http://localhost:8080/api/**
 
 **Health Check:** http://localhost:8080/api/health
 
+## Testing the Full-Stack Application
+
+To test the complete integration between frontend and backend:
+
+1. **Start Backend:** `cd backend && mvn spring-boot:run`
+2. **Start Frontend:** `cd frontend && npm start`
+3. **Open Browser:** http://localhost:4200
+
+For detailed testing instructions, see [TESTING-GUIDE.md](TESTING-GUIDE.md)
+
 ## Documentation
 
+- **Testing Guide**: See [TESTING-GUIDE.md](TESTING-GUIDE.md) for full-stack integration testing
 - **Frontend**: See [frontend/README.md](frontend/README.md) for Angular application details
 - **Backend**: See [backend/README.md](backend/README.md) for Spring Boot API documentation
 - **Migration Guide**: See [MIGRATION-SUMMARY.md](MIGRATION-SUMMARY.md) for Angular framework deep dive

@@ -112,6 +112,44 @@ Response:
 }
 ```
 
+### Bears API
+
+#### Get All Bears
+
+```http
+GET /api/bears
+```
+
+Fetches bear data from Wikipedia API and returns formatted results.
+
+**Response: 200 OK**
+```json
+[
+  {
+    "name": "Brown bear",
+    "binomial": "Ursus arctos",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/...",
+    "range": "North America, Europe, Asia"
+  },
+  {
+    "name": "American black bear",
+    "binomial": "Ursus americanus",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/...",
+    "range": "North America"
+  }
+]
+```
+
+**Response: 204 No Content**
+- Returned when no bears are found
+
+**Features:**
+- Fetches data from Wikipedia's List of Ursids
+- Validates image URLs
+- Returns placeholder images for missing images
+- Removes duplicate entries
+- Includes bear name, scientific name, image, and range information
+
 ## Development
 
 ### Hot Reload
@@ -140,17 +178,12 @@ java -jar target/wildlife-backend-1.0.0.jar
 
 ## Future API Endpoints
 
-When connecting with the Angular frontend, consider these endpoints:
-
 ### Comments API
 - `GET /api/comments` - Get all comments
 - `POST /api/comments` - Create a new comment
 - `GET /api/comments/{id}` - Get a specific comment
+- `PUT /api/comments/{id}` - Update a comment
 - `DELETE /api/comments/{id}` - Delete a comment
-
-### Bears API (if moving from Wikipedia)
-- `GET /api/bears` - Get all bears
-- `GET /api/bears/{id}` - Get a specific bear
 
 ## Database
 

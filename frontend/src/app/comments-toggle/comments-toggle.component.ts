@@ -45,7 +45,6 @@ export class CommentsToggleComponent implements AfterViewInit {
   buttonText = 'Show comments';
 
   ngAfterViewInit(): void {
-    // Initialize with comments hidden
   }
 
   toggleComments(): void {

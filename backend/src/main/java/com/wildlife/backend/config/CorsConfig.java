@@ -17,16 +17,12 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Allow credentials
         config.setAllowCredentials(true);
         
-        // Allow Angular frontend
         config.setAllowedOrigins(List.of("http://localhost:4200"));
         
-        // Allow all headers
         config.addAllowedHeader("*");
         
-        // Allow common HTTP methods
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         
         source.registerCorsConfiguration("/**", config);

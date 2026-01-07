@@ -32,7 +32,6 @@ export class SearchComponent {
     event.preventDefault();
 
     try {
-      // Clear previous highlights
       document.querySelectorAll('.highlight').forEach((el) => {
         const parent = el.parentNode;
         if (parent !== null) {
@@ -54,7 +53,6 @@ export class SearchComponent {
 
       const walk = (node: Node): void => {
         if (node.nodeType === 3) {
-          // Text node
           const nodeValue = node.nodeValue ?? '';
           const match = nodeValue.match(regex);
           if (match !== null) {
@@ -78,7 +76,6 @@ export class SearchComponent {
         }
       };
 
-      // Only search within article content
       const articleElement = document.querySelector('article');
       if (articleElement !== null) {
         walk(articleElement);
