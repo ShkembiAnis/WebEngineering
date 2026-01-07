@@ -22,14 +22,85 @@ The project introduces a lot of code smells for you to tackle.
 * [4th Playground](#4-migrate-to-a-frontend-framework): 25.11.2025
 * [5th Playground](#5-integrate-a-backend-framework): 17.12.2025
 
+## Project Structure
+
+This is a full-stack application with:
+- **Frontend**: Angular 17 (standalone components)
+- **Backend**: Spring Boot 3.2.1 REST API
+
+```
+WebEngineering/
+├── frontend/               # Angular application
+│   ├── src/
+│   │   ├── app/           # Angular components
+│   │   ├── assets/        # Static files
+│   │   └── ...
+│   ├── angular.json
+│   ├── package.json
+│   └── README.md
+├── backend/               # Spring Boot API
+│   ├── src/
+│   │   ├── main/java/
+│   │   └── test/
+│   ├── pom.xml
+│   └── README.md
+├── MIGRATION-SUMMARY.md   # Angular framework documentation
+└── README.md
+```
+
 ## Features
 
 - Wonderful UI-design :heart_eyes:
 - Loads bear data using [Wikipedia API](https://www.mediawiki.org/wiki/API:Main_page) :bear:
   - Original Wikipedia Page can be found [here](https://en.wikipedia.org/wiki/List_of_ursids)
-- Worst JS coding practices :cold_sweat:
-- No Build and Dependency Management at all :fire:
+- Angular frontend with TypeScript
+- Spring Boot REST API backend
 
+## Running the Application
+
+### Frontend (Angular)
+
+```bash
+# Navigate to frontend directory
+cd frontend
+
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+
+# Build for production
+npm run build:prod
+```
+
+The Angular app runs on: **http://localhost:4200/**
+
+### Backend (Spring Boot)
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Run the application
+mvn spring-boot:run
+
+# Or build and run JAR
+mvn clean package
+java -jar target/wildlife-backend-1.0.0.jar
+```
+
+The Spring Boot API runs on: **http://localhost:8080/api/**
+
+**Health Check:** http://localhost:8080/api/health
+
+## Documentation
+
+- **Frontend**: See [frontend/README.md](frontend/README.md) for Angular application details
+- **Backend**: See [backend/README.md](backend/README.md) for Spring Boot API documentation
+- **Migration Guide**: See [MIGRATION-SUMMARY.md](MIGRATION-SUMMARY.md) for Angular framework deep dive
+
+---
 
 # Coding Playground Description
 
