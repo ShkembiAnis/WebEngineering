@@ -2,19 +2,19 @@ services:
   backend:
     build:
       context: ./backend
-      target: dev
+      target: runtime
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
-      CORS_ALLOWED_ORIGINS: "http://localhost:${FRONTEND_PORT:-4200}"
+      SPRING_PROFILES_ACTIVE: prod
+      CORS_ALLOWED_ORIGINS: "http://localhost:${FRONTEND_NGINX_PORT:-8081}"
 
   frontend:
     build:
       context: ./frontend
-      target: dev
+      target: nginx
     ports:
-      - "${FRONTEND_PORT:-4200}:4200"
+      - "${FRONTEND_NGINX_PORT:-8081}:80"
     depends_on:
       - backend
 

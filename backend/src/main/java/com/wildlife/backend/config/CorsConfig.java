@@ -8,6 +8,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class CorsConfig {
@@ -19,7 +20,15 @@ public class CorsConfig {
         
         config.setAllowCredentials(false);
 
-        config.setAllowedOrigins(List.of("http://localhost:4200"));
+        String originsEnv = System.getenv("CORS_ALLOWED_ORIGINS");
+        List<String> allowedOrigins = originsEnv == null || originsEnv.isBlank()
+                ? List.of("http://localhost:4200")
+                : Arrays.stream(originsEnv.split(","))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toList());
+
+        config.setAllowedOrigins(allowedOrigins);
         
         config.addAllowedHeader("*");
         
