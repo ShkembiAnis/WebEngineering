@@ -1,0 +1,34 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      target: runtime
+    ports:
+      - "8080:8080"
+
+  backend-dev:
+    build:
+      context: ./backend
+      target: dev
+    ports:
+      - "8082:8080"
+
+  frontend-dev:
+    build:
+      context: ./frontend
+      target: dev
+    ports:
+      - "4200:4200"
+    depends_on:
+      - backend
+
+  frontend-nginx:
+    build:
+      context: ./frontend
+      target: nginx
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+
+
